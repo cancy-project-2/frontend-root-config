@@ -1,0 +1,37 @@
+name: Website (root-config) - Production
+on:
+  push:
+    branches:
+      - production
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: refs/heads/production
+          fetch-depth: 1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-js-${{ hashFiles('yarn.lock') }}
+      - run: yarn lint
+      - run: yarn test
+        env:
+          NODE_ENV: test
+      - run: yarn build
+        env:
+          NODE_ENV: production
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '276.0.0'
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      - run: gsutil -m rsync -d -c -r dist gs://cancy-website-bucket
+      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=3600" gs://cancy-website-bucket/**/*.html
+      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" gs://cancy-website-bucket/js/*.js
+      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" gs://cancy-website-bucket/css/*.css
