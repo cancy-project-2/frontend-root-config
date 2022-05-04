@@ -33,6 +33,4 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - uses: google-github-actions/setup-gcloud@v0
       - run: gsutil -m rsync -d -c -r dist gs://cancy-website-bucket
-      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=3600" gs://cancy-website-bucket/**/*.html
-      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" gs://cancy-website-bucket/js/*.js
-      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" gs://cancy-website-bucket/css/*.css
+      - run: gsutil -m setmeta -h "Cache-Control:public, max-age=3600" gs://cancy-website-bucket
