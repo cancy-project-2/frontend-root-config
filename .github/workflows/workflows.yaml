@@ -19,6 +19,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-js-${{ hashFiles('yarn.lock') }}
+      - run: yarn install
       - run: yarn lint
       - run: yarn test
         env:
