@@ -1,5 +1,7 @@
 {
   "name": "@cancy-project/root-config",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "start": "webpack serve --port 9000 --env isLocal",
     "lint": "eslint src --ext js,ts,tsx",
